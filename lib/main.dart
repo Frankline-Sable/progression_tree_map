@@ -33,90 +33,194 @@ class ProgressionTreeHome extends StatefulWidget {
 }
 
 class _ProgressionTreeHomeState extends State<ProgressionTreeHome> {
-  @override
-  Widget build(BuildContext context) {
-    Map<TreeNode?, List<TreeNode>> nodes = {
-      TreeNode(): [
-        TreeNode(nodes: [
-          const TreeNode(),
-          TreeNode(
-              size: 30,
-              child: Container(
-                child: const Text(
-                  '12',
-                  style: TextStyle(color: Colors.black, fontSize: 8),
+  // Colored Progression TreeMap
+  Map<TreeNode?, List<TreeNode>> get coloredProgressionTreeMapNodes => {
+        const TreeNode(): [
+          const TreeNode(nodes: [
+            TreeNode(),
+            TreeNode(
+                size: 30,
+                child: Text(
+                  'A',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
+                nodes: [
+                  TreeNode(
+                      nodes: [TreeNode(), TreeNode(), TreeNode(), TreeNode()])
+                ]),
+            TreeNode(nodes: [TreeNode(), TreeNode()]),
+          ]),
+          const TreeNode(
+              partnerWidgetOffset: Offset(14, 18),
+              partnerWidget: Text(
+                "GOING UP",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
+                    color: Colors.black),
               ),
               nodes: [
-                const TreeNode(
-                    nodes: [TreeNode(), TreeNode(), TreeNode(), TreeNode()])
-              ]),
-          const TreeNode(nodes: [TreeNode(), TreeNode()]),
-        ]),
-        TreeNode(
-            partnerWidgetOffset: Offset(10, 20),
-            partnerWidget: Text(
-              "Together",
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0,
-                  color: Colors.black),
-            ),
-            nodes: [
-              TreeNode(nodes: [
                 TreeNode(nodes: [
                   TreeNode(nodes: [
                     TreeNode(nodes: [
-                      TreeNode(),
+                      TreeNode(nodes: [
+                        TreeNode(),
+                      ]),
                     ]),
                   ]),
+                  TreeNode(),
                 ]),
-                TreeNode(),
               ]),
-            ]),
-        TreeNode(nodes: [
-          TreeNode(),
-          TreeNode(nodes: [
-            TreeNode(),
+          const TreeNode(nodes: [
             TreeNode(),
             TreeNode(nodes: [
+              TreeNode(),
+              TreeNode(),
               TreeNode(nodes: [
-                TreeNode(),
+                TreeNode(nodes: [
+                  TreeNode(),
+                ]),
               ]),
             ]),
           ]),
-        ]),
-        const TreeNode(nodes: [TreeNode()]),
-      ]
-    };
+          const TreeNode(
+              partnerWidgetOffset: Offset(-120, -20),
+              partnerWidget: Text(
+                "COMING DOWN",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
+                    color: Colors.black),
+              ),
+              nodes: [TreeNode()]),
+        ]
+      };
+  
+  // Progression TreeMap with  widgets(texts/images)
+  Map<TreeNode?, List<TreeNode>> get progressionTreeMapWithWidgetsNodes => {
+        const TreeNode(): [
+          const TreeNode(nodes: [
+            TreeNode( child: Text(
+              'A',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold),
+            ),),
+            TreeNode(
+                size: 30,
+                child: Text(
+                  'B',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                ),
+                nodes: [
+                  TreeNode(
+                      nodes: [TreeNode(), TreeNode(), TreeNode(), TreeNode()])
+                ]),
+            TreeNode(
+                child: Text(
+                  'C',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                ),
+                nodes: [TreeNode(), TreeNode()]),
+          ]),
+          const TreeNode(
+              partnerWidgetOffset: Offset(14, 18),
+              partnerWidget: Text(
+                "GOING UP",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
+                    color: Colors.black),
+              ),
+              nodes: [
+                TreeNode(
+                    child: Icon(Icons.offline_bolt,color: Colors.black, size: 16,),
+                    decoration: null,
+                    nodes: [
+                  TreeNode(nodes: [
+                    TreeNode(nodes: [
+                      TreeNode(nodes: [
+                        TreeNode(),
+                      ]),
+                    ]),
+                  ]),
+                  TreeNode(),
+                ]),
+              ]),
+          const TreeNode(nodes: [
+            TreeNode(),
+            TreeNode(nodes: [
+              TreeNode(),
+              TreeNode(),
+              TreeNode(nodes: [
+                TreeNode(nodes: [
+                  TreeNode(),
+                ]),
+              ]),
+            ]),
+          ]),
+          const TreeNode(
+              partnerWidgetOffset: Offset(-120, -20),
+              partnerWidget: Text(
+                "COMING DOWN",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0,
+                    color: Colors.black),
+              ),
+              nodes: [TreeNode()]),
+        ]
+      };
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Progression TreeMap Demo"),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ..._treeMapWithGradient(nodes),
-            ],
-          ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ..._coloredProgressionTreeMap(coloredProgressionTreeMapNodes),
+
+            ..._outlinedProgressionTreeMap(coloredProgressionTreeMapNodes),
+            ..._ProgressionTreeMapWithWidgets(progressionTreeMapWithWidgetsNodes),
+          ],
         ),
       ),
     );
   }
 
-  List<Widget> _treeMapWithGradient(nodes) => [
-        Text(
-          "Together",
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-              letterSpacing: 0,
-              color: Colors.black),
+  List<Widget> _coloredProgressionTreeMap(nodes) => [
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: const Text(
+            "Colored Progression Tree Map",
+            maxLines: 1,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0,
+                color: Colors.black),
+          ),
         ),
         SizedBox(
           width: 400,
@@ -130,7 +234,7 @@ class _ProgressionTreeHomeState extends State<ProgressionTreeHome> {
             nodeSeparationAngleFac: 1.2,
             globalNodeSize: 20,
             centerNodeSize: 40,
-            linesStartFromOrigin: false,
+            linesStartFromOrigin: true,
             linesStrokeWidth: 3,
             nodeDecoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -140,4 +244,76 @@ class _ProgressionTreeHomeState extends State<ProgressionTreeHome> {
           ),
         )
       ];
+  List<Widget> _outlinedProgressionTreeMap(nodes) => [
+        Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: const Text(
+            "Colored Progression Tree Map",
+            maxLines: 1,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0,
+                color: Colors.black),
+          ),
+        ),
+        SizedBox(
+          width: 400,
+          height: 400,
+          child: ProgressionTreeMap(
+            treeNodes: nodes,
+            spacingFactor: 1.0,
+            circleBoundaryPaintingStyle: PaintingStyle.stroke,
+            circleBoundaryColor: Colors.grey,
+            nodePlacement: NodesPlacement.border,
+            nodeSeparationAngleFac: 1.2,
+            globalNodeSize: 20,
+            centerNodeSize: 40,
+            linesStartFromOrigin: false,
+            linesStrokeWidth: 2,
+            linesStrokeColor: Colors.black,
+            nodeDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [Colors.red, Colors.red.shade700],
+                )),
+          ),
+        )
+      ];
+
+  List<Widget> _ProgressionTreeMapWithWidgets(nodes) => [
+    Container(
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: const Text(
+        "Progression Tree Map Text",
+        maxLines: 1,
+        style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0,
+            color: Colors.black),
+      ),
+    ),
+    SizedBox(
+      width: 400,
+      height: 400,
+      child: ProgressionTreeMap(
+        treeNodes: nodes,
+        spacingFactor: 1.0,
+        circleBoundaryPaintingStyle: PaintingStyle.fill,
+        circleBoundaryColor: Colors.red,
+        nodePlacement: NodesPlacement.border,
+        nodeSeparationAngleFac: 1.2,
+        globalNodeSize: 20,
+        centerNodeSize: 40,
+        linesStartFromOrigin: true,
+        linesStrokeWidth: 3,
+        nodeDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white),
+      ),
+    )
+  ];
 }
