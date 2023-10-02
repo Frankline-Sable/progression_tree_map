@@ -548,6 +548,9 @@ class ProgressionTreeHome extends StatelessWidget {
           width: 400,
           height: 400,
           child: map,
-        )
+        ),
+        const SizedBox(
+          height: 48,
+        ),
       ];
 }
