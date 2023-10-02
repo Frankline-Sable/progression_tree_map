@@ -164,11 +164,10 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
     }
 
     nd.forEachIndexed((index, node) {
-      count = 0;
+      count = node.nodes.isEmpty ? 0 : 1;
       nodeDepthTraverse(node.nodes);
       pathDepth[index] = count;
     });
-
     return pathDepth.values.max;
   }
 
@@ -244,7 +243,8 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
           keyNodes.forEachIndexed((ind, vNode) {
             double vnAngle = (mp!.keys.first.angle -
                 (15 * widget.nodeSeparationAngleFac) * ind);
-            vnAngle = MathHelpers.clampRange(
+            if(keyNodes.length>1) {
+              vnAngle = MathHelpers.clampRange(
                 percentage: (((ind + 1) / keyNodes.length) * 100),
                 min: (mp.keys.first.angle) -
                     ((15 * widget.nodeSeparationAngleFac) *
@@ -252,6 +252,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
                 max: (mp.keys.first.angle) +
                     ((15 * widget.nodeSeparationAngleFac) *
                         (keyNodes.length / 2)));
+            }
 
             if (vNode == keyNode) {
               keyNode = vNode.copyWith(
@@ -282,6 +283,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         double vnAngle =
             (keyNode.angle - (15 * widget.nodeSeparationAngleFac) * ind);
 
+        if(valueNodes.length>1)
         vnAngle = MathHelpers.clampRange(
             percentage: (((ind + 1) / valueNodes.length) * 100),
             min: keyNode.angle -
