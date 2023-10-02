@@ -31,12 +31,16 @@ class ConnectingLine extends CustomPainter {
         path.lineTo(keyNode.offset.dx + (keyNode.size!) / 2,
             keyNode.offset.dy + (keyNode.size!) / 2);
       }
-      for (TreeNode tNode in uiN.values.first) {
-        path.moveTo(keyNode.offset.dx + (keyNode.size!) / 2,
-            keyNode.offset.dy + (keyNode.size!) / 2);
-        TreeNode valueNode = tNode;
-        path.lineTo(valueNode.offset.dx + (valueNode.size!) / 2,
-            valueNode.offset.dy + (valueNode.size!) / 2);
+      if (uiN.values.first.isNotEmpty) {
+        for (TreeNode tNode in uiN.values.first) {
+          path.moveTo(keyNode.offset.dx + (keyNode.size!) / 2,
+              keyNode.offset.dy + (keyNode.size!) / 2);
+          TreeNode valueNode = tNode;
+          path.lineTo(valueNode.offset.dx + (valueNode.size!) / 2,
+              valueNode.offset.dy + (valueNode.size!) / 2);
+          canvas.drawPath(path, paint);
+        }
+      } else {
         canvas.drawPath(path, paint);
       }
     }
