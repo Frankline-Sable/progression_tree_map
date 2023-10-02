@@ -14,7 +14,7 @@ class ProgressionTreeMap extends StatefulWidget {
   const ProgressionTreeMap(
       {super.key,
       required this.treeNodes,
-      this.spacingFactor = 1.0,
+      this.spacingFactor = 0,
       this.maxDepthToShow = 0,
       this.circleBoundaryColor = Colors.grey,
       this.circleBoundaryShade = true,
@@ -65,82 +65,86 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final int treeNodeDepth = _treeNodeDepth(widget.treeNodes.values.first);
     final int nodeDepth = widget.maxDepthToShow > treeNodeDepth
         ? treeNodeDepth
         : (widget.maxDepthToShow < 1 ? treeNodeDepth : widget.maxDepthToShow);
 
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-      final double spacing =
-          (viewportConstraints.maxWidth / nodeDepth) * widget.spacingFactor;
+    return Padding(
+      padding: EdgeInsets.all(
+          (mediaQueryData.size.width / 2) * widget.spacingFactor),
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        final double spacing = (viewportConstraints.maxWidth / nodeDepth);
 
-      _centerNodeSize = widget.centerNodeSize == null
-          ? (spacing / 2)
-          : widget.centerNodeSize!;
-      _defaultNodeSize = widget.globalNodeSize == null
-          ? _centerNodeSize / 2
-          : widget.globalNodeSize!;
+        _centerNodeSize = widget.centerNodeSize == null
+            ? (spacing / 2)
+            : widget.centerNodeSize!;
+        _defaultNodeSize = widget.globalNodeSize == null
+            ? _centerNodeSize / 2
+            : widget.globalNodeSize!;
 
-      _getNodePlacementFactor(spacing);
+        _getNodePlacementFactor(spacing);
 
-      _prepareUiNodes(
-          widget.treeNodes.values.first, viewportConstraints, spacing);
-      _centerTreeNode = widget.treeNodes.keys.first;
+        _prepareUiNodes(
+            widget.treeNodes.values.first, viewportConstraints, spacing);
+        _centerTreeNode = widget.treeNodes.keys.first;
 
-      _linesStartFromOrigin = widget.linesStartFromOrigin == null
-          ? (_centerTreeNode == null ? false : true)
-          : widget.linesStartFromOrigin!;
+        _linesStartFromOrigin = widget.linesStartFromOrigin == null
+            ? (_centerTreeNode == null ? false : true)
+            : widget.linesStartFromOrigin!;
 
-      return Center(
-        child: SizedBox(
-          width: viewportConstraints.maxWidth,
-          height: viewportConstraints.maxHeight,
-          child: ClipPath(
-            clipper: BoundaryClipper(),
-            clipBehavior: widget.clipBehaviour,
-            child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  ...List.generate(nodeDepth, (index) {
-                    final looper = nodeDepth - index;
-                    return CustomPaint(
-                      painter: CircularBoundaries(
-                          radius: (looper * spacing) / 2,
-                          strokeWidth: widget.circleBoundaryStrokeWidth,
-                          paintingStyle: widget.circleBoundaryPaintingStyle,
-                          color: widget.circleBoundaryColor.tintOrShade(
-                              widget.circleBoundaryShade
-                                  ? ((100 * (looper / nodeDepth))
-                                      .clampRange(min: 30, max: 0))
-                                  : 0,
-                              darken: false)),
-                    );
-                  }),
-                  CustomPaint(
-                    painter: ConnectingLine(
-                        uiNodesPrep: _uiNodesPrep,
-                        color: widget.linesStrokeColor,
-                        strokeWidth: widget.linesStrokeWidth,
-                        startFromCenter: _linesStartFromOrigin),
-                    size: viewportConstraints.biggest,
-                  ),
-                  if (_centerTreeNode != null)
-                    Container(
-                      alignment: Alignment.center,
-                      width: _centerNodeSize,
-                      height: _centerNodeSize,
-                      decoration:
-                          _centerTreeNode!.decoration ?? widget.nodeDecoration,
-                      child: _centerTreeNode!.child,
+        return Center(
+          child: SizedBox(
+            width: viewportConstraints.maxWidth,
+            height: viewportConstraints.maxHeight,
+            child: ClipPath(
+              clipper: BoundaryClipper(),
+              clipBehavior: widget.clipBehaviour,
+              child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    ...List.generate(nodeDepth, (index) {
+                      final looper = nodeDepth - index;
+                      return CustomPaint(
+                        painter: CircularBoundaries(
+                            radius: (looper * spacing) / 2,
+                            strokeWidth: widget.circleBoundaryStrokeWidth,
+                            paintingStyle: widget.circleBoundaryPaintingStyle,
+                            color: widget.circleBoundaryColor.tintOrShade(
+                                widget.circleBoundaryShade
+                                    ? ((100 * (looper / nodeDepth))
+                                        .clampRange(min: 30, max: 0))
+                                    : 0,
+                                darken: false)),
+                      );
+                    }),
+                    CustomPaint(
+                      painter: ConnectingLine(
+                          uiNodesPrep: _uiNodesPrep,
+                          color: widget.linesStrokeColor,
+                          strokeWidth: widget.linesStrokeWidth,
+                          startFromCenter: _linesStartFromOrigin),
+                      size: viewportConstraints.biggest,
                     ),
-                  ..._displayUiNodesWidgets(),
-                ]),
+                    if (_centerTreeNode != null)
+                      Container(
+                        alignment: Alignment.center,
+                        width: _centerNodeSize,
+                        height: _centerNodeSize,
+                        decoration: _centerTreeNode!.decoration ??
+                            widget.nodeDecoration,
+                        child: _centerTreeNode!.child,
+                      ),
+                    ..._displayUiNodesWidgets(),
+                  ]),
+            ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 
   int _treeNodeDepth(List<TreeNode> nodes) {
