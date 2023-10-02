@@ -27,6 +27,7 @@ class ProgressionTreeMap extends StatefulWidget {
       this.linesStrokeWidth = 1,
       this.linesStartFromOrigin,
       this.clipBehaviour = Clip.antiAlias,
+      this.circleBoundaryStrokeWidth = 5,
       this.nodeDecoration =
           const BoxDecoration(color: Colors.white, shape: BoxShape.circle)});
 
@@ -48,6 +49,7 @@ class ProgressionTreeMap extends StatefulWidget {
   final double linesStrokeWidth;
   final BoxDecoration? nodeDecoration;
   final Clip clipBehaviour;
+  final double circleBoundaryStrokeWidth;
 }
 
 class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
@@ -106,7 +108,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
                     return CustomPaint(
                       painter: CircularBoundaries(
                           radius: (looper * spacing) / 2,
-                          strokeWidth: 5,
+                          strokeWidth: widget.circleBoundaryStrokeWidth,
                           paintingStyle: widget.circleBoundaryPaintingStyle,
                           color: widget.circleBoundaryColor.tintOrShade(
                               widget.circleBoundaryShade
