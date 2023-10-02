@@ -68,13 +68,10 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final int treeNodeDepth = _treeNodeDepth(widget.treeNodes.values.first);
-    final int nodeDepth = treeNodeDepth;
-    /*
     final int nodeDepth = widget.maxDepthToShow > treeNodeDepth
         ? treeNodeDepth
         : (widget.maxDepthToShow < 1 ? treeNodeDepth : widget.maxDepthToShow);
 
-    */
     return Padding(
       padding: EdgeInsets.all(
           (mediaQueryData.size.width / 2) * widget.spacingFactor),
