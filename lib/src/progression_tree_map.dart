@@ -283,7 +283,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         double vnAngle =
             (keyNode.angle - (15 * widget.nodeSeparationAngleFac) * ind);
 
-        if (valueNodes.length > 1)
+        if (valueNodes.length > 1) {
           vnAngle = MathHelpers.clampRange(
               percentage: (((ind + 1) / valueNodes.length) * 100),
               min: keyNode.angle -
@@ -292,6 +292,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
               max: keyNode.angle +
                   ((15 * widget.nodeSeparationAngleFac) *
                       (valueNodes.length / 2)));
+        }
 
         return vNode.copyWith(
             angle: vnAngle,
