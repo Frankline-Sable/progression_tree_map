@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:vector_math/vector_math.dart' as vector;
 import 'classes/nodes_placement.dart';
 import 'boundary_clipper.dart';
+import 'helpers/helpers.dart';
 
 class ProgressionTreeMap extends StatefulWidget {
   const ProgressionTreeMap(
@@ -67,10 +68,13 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final int treeNodeDepth = _treeNodeDepth(widget.treeNodes.values.first);
+    final int nodeDepth = treeNodeDepth;
+    /*
     final int nodeDepth = widget.maxDepthToShow > treeNodeDepth
         ? treeNodeDepth
         : (widget.maxDepthToShow < 1 ? treeNodeDepth : widget.maxDepthToShow);
 
+    */
     return Padding(
       padding: EdgeInsets.all(
           (mediaQueryData.size.width / 2) * widget.spacingFactor),
@@ -147,20 +151,25 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
     );
   }
 
-  int _treeNodeDepth(List<TreeNode> nodes) {
+  int _treeNodeDepth(List<TreeNode> nd) {
     Map<int, int> pathDepth = {};
-    int getDepth(List<TreeNode> nodes) {
-      nodes.forEachIndexed((index, node) {
-        pathDepth[index] =
-            1 + (pathDepth.containsKey(index) ? pathDepth[index]! : 0);
+    int count = 0;
+    nodeDepthTraverse(List<TreeNode> nodes) {
+      count++;
+      for (TreeNode node in nodes) {
         if (node.nodes.isNotEmpty) {
-          getDepth(node.nodes);
+          nodeDepthTraverse(node.nodes);
         }
-      });
-      return pathDepth.length;
+      }
     }
 
-    return getDepth(nodes);
+    nd.forEachIndexed((index, node) {
+      count = 0;
+      nodeDepthTraverse(node.nodes);
+      pathDepth[index] = count;
+    });
+
+    return pathDepth.values.max;
   }
 
   int _nodeDepth = 0;
@@ -231,9 +240,19 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
               .where((uiP) => uiP.values.first.contains(keyNode))
               .first;
 
-          mp.values.first.map((e) => e).forEachIndexed((ind, vNode) {
+          List<TreeNode> keyNodes = mp.values.first.map((e) => e).toList();
+          keyNodes.forEachIndexed((ind, vNode) {
             double vnAngle = (mp!.keys.first.angle -
                 (15 * widget.nodeSeparationAngleFac) * ind);
+            vnAngle = MathHelpers.clampRange(
+                percentage: (((ind + 1) / keyNodes.length) * 100),
+                min: (mp.keys.first.angle) -
+                    ((15 * widget.nodeSeparationAngleFac) *
+                        (keyNodes.length / 2)),
+                max: (mp.keys.first.angle) +
+                    ((15 * widget.nodeSeparationAngleFac) *
+                        (keyNodes.length / 2)));
+
             if (vNode == keyNode) {
               keyNode = vNode.copyWith(
                   angle: vnAngle,
@@ -258,10 +277,20 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
 
     _uiNodesPrep = _uiNodesPrep.mapIndexed((index, uiNode) {
       TreeNode keyNode = uiNode.keys.first;
-      List<TreeNode> valueNodes =
-          uiNode.values.first.map((e) => e).mapIndexed((ind, vNode) {
+      List<TreeNode> valueNodes = uiNode.values.first.map((e) => e).toList();
+      valueNodes = valueNodes.mapIndexed((ind, vNode) {
         double vnAngle =
             (keyNode.angle - (15 * widget.nodeSeparationAngleFac) * ind);
+
+        vnAngle = MathHelpers.clampRange(
+            percentage: (((ind + 1) / valueNodes.length) * 100),
+            min: keyNode.angle -
+                ((15 * widget.nodeSeparationAngleFac) *
+                    (valueNodes.length / 2)),
+            max: keyNode.angle +
+                ((15 * widget.nodeSeparationAngleFac) *
+                    (valueNodes.length / 2)));
+
         return vNode.copyWith(
             angle: vnAngle,
             offset: Offset(
