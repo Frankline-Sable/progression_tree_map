@@ -243,15 +243,15 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
           keyNodes.forEachIndexed((ind, vNode) {
             double vnAngle = (mp!.keys.first.angle -
                 (15 * widget.nodeSeparationAngleFac) * ind);
-            if(keyNodes.length>1) {
+            if (keyNodes.length > 1) {
               vnAngle = MathHelpers.clampRange(
-                percentage: (((ind + 1) / keyNodes.length) * 100),
-                min: (mp.keys.first.angle) -
-                    ((15 * widget.nodeSeparationAngleFac) *
-                        (keyNodes.length / 2)),
-                max: (mp.keys.first.angle) +
-                    ((15 * widget.nodeSeparationAngleFac) *
-                        (keyNodes.length / 2)));
+                  percentage: (((ind + 1) / keyNodes.length) * 100),
+                  min: (mp.keys.first.angle) -
+                      ((15 * widget.nodeSeparationAngleFac) *
+                          (keyNodes.length / 2)),
+                  max: (mp.keys.first.angle) +
+                      ((15 * widget.nodeSeparationAngleFac) *
+                          (keyNodes.length / 2)));
             }
 
             if (vNode == keyNode) {
@@ -283,15 +283,15 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         double vnAngle =
             (keyNode.angle - (15 * widget.nodeSeparationAngleFac) * ind);
 
-        if(valueNodes.length>1)
-        vnAngle = MathHelpers.clampRange(
-            percentage: (((ind + 1) / valueNodes.length) * 100),
-            min: keyNode.angle -
-                ((15 * widget.nodeSeparationAngleFac) *
-                    (valueNodes.length / 2)),
-            max: keyNode.angle +
-                ((15 * widget.nodeSeparationAngleFac) *
-                    (valueNodes.length / 2)));
+        if (valueNodes.length > 1)
+          vnAngle = MathHelpers.clampRange(
+              percentage: (((ind + 1) / valueNodes.length) * 100),
+              min: keyNode.angle -
+                  ((15 * widget.nodeSeparationAngleFac) *
+                      (valueNodes.length / 2)),
+              max: keyNode.angle +
+                  ((15 * widget.nodeSeparationAngleFac) *
+                      (valueNodes.length / 2)));
 
         return vNode.copyWith(
             angle: vnAngle,
@@ -351,8 +351,8 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
           Offset offset = tNode.partnerWidgetOffset ??
               Offset((tNode.size ?? 0), (tNode.size ?? 0));
           w.add(Positioned(
-              top: offset.dy - offset.dy,
-              left: offset.dx + offset.dx,
+              top: tNode.offset.dy - offset.dy,
+              left: tNode.offset.dx + offset.dx,
               child: tNode.partnerWidget!));
         }
         w.add(Positioned(
