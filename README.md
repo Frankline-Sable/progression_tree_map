@@ -1,3 +1,16 @@
+<!--
+This README describes the package. If you publish this package to pub.dev,
+this README's contents appear on the landing page for your package.
+
+For information about how to write a good package README, see the guide for
+[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+
+For general information about developing packages, see the Dart guide for
+[creating packages](https://dart.dev/guides/libraries/create-library-packages)
+and the Flutter guide for
+[developing packages and plugins](https://flutter.dev/developing-packages).
+-->
+
 ## Progression TreeMap
 
 Progression TreeMap is an open source Flutter package, that is used to display a tree list, to the ui, you can use it to interpret any complex tree or progression map to the ui of your app and customize it to your liking.
@@ -13,9 +26,8 @@ Install and import the package. Then just customize its parameters.
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  progression_tree_map: ^0.5.0
+  
+  progression_tree_map: ^0.5.1
 ```
 
 ## How to use
@@ -35,7 +47,7 @@ Create a list of nodes, as well as its sublist as below:
 };
 ```
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/e6e65d3ec7efd7171c5ca107941150219ea62eca/screenshots/example_tree.png" alt="Colored Nodes & Outlines" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/example.png" alt="Colored Nodes & Outlines" width="300"/>
 
 
 ---
@@ -43,7 +55,7 @@ Create a list of nodes, as well as its sublist as below:
 
 ### Example 1 - Colored Nodes & Outlines
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/screenshots/tNodeColoredNodesAndOutlines.png" alt="Colored Nodes & Outlines" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/1.png" alt="Colored Nodes & Outlines" width="300"/>
 
 ```dart
 ProgressionTreeMap(
@@ -63,7 +75,7 @@ shape: BoxShape.circle, color: Colors.blueAccent))
 
 ### Example 2 - Colored Nodes & Icons
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/screenshots/tNodeColoredNodesAndIcons.png" alt="Colored Nodes & Outlines" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/2.png" alt="Colored Nodes & Outlines" width="300"/>
 
 ```dart
 ProgressionTreeMap(
@@ -84,7 +96,7 @@ shape: BoxShape.circle, color: Colors.cyanAccent))
 
 ### Example 3 - Glowing Nodes & Background Text
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/screenshots/tNodeGlowingNodesBackgroundTexts.png" alt="Glowing Nodes & Background Text" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/3.png" alt="Colored Nodes & Outlines" width="300"/>
 
 ```dart
 ProgressionTreeMap(
@@ -105,7 +117,7 @@ colors: [Colors.white, Colors.white30])))
 
 ### Example 4 - Collection & Ui Items
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/screenshots/collectionAndUiItems.png" alt="Collection  & Ui Items" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/4.png" alt="Colored Nodes & Outlines" width="300"/>
 
 ```dart
 ProgressionTreeMap(
