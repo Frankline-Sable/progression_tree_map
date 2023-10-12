@@ -47,7 +47,7 @@ Create a list of nodes, as well as its sublist as below:
 };
 ```
 
-<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/example.png" alt="Colored Nodes & Outlines" width="300"/>
+<img src="https://raw.githubusercontent.com/Frankline-Sable/progression_tree_map/main/example/screenshots/example.png" alt="example" width="800"/>
 
 
 ---
