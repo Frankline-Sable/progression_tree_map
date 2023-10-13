@@ -26,23 +26,23 @@ The package examines the left-side tree diagram and generates the user interface
 
 Create a variable with list of nodes, as well as its sublist as below:
 ```dart
-  Map<TreeNode?, List<TreeNode>> nodes =
-{TreeNode():[
-  TreeNode(nodes: [
-    TreeNode(),
+Map<TreeNode?, List<TreeNode>> nodes = {
+  TreeNode(): [
     TreeNode(nodes: [
+      TreeNode(),
       TreeNode(nodes: [
         TreeNode(nodes: [
-          TreeNode(), TreeNode()])
-      ])])])]
+          TreeNode(nodes: [TreeNode(), TreeNode()])
+        ])
+      ])
+    ])
+  ]
 };
 ```
 
 Then call the <i>ProgressionTreeMap</i> as below
 ```dart
-ProgressionTreeMap(
-    treeNodes: nodes
-  )
+ProgressionTreeMap(treeNodes: nodes);
 ```
 
 ---
