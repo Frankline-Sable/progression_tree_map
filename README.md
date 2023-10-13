@@ -151,21 +151,4 @@ TreeNode(
 )
 ```
 
-Must be added to ProgressionTreeMap as a map of **`Map<TreeNode?, List<TreeNode>>`**
-
-```dart
-Map<TreeNode?, List<TreeNode>>  nodes =
-{
-  const TreeNode(): [
-    const TreeNode(nodes: [
-      TreeNode(
-        child: Icon(Icons.lunch_dining_rounded),
-      ),
-      TreeNode(
-        child: Icon(Icons.ramen_dining),
-      )
-    ])]
-}
-```
-
 Very customizable, feel free to customize however you like! 😎
