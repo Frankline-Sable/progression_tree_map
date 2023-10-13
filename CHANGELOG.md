@@ -16,7 +16,7 @@
 * Added an example project
 
 
-## 1.0.0- 12 October 2023
+## 1.0.0- 13 October 2023
 
 * Some housekeeping
  

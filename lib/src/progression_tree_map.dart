@@ -11,6 +11,7 @@ import 'classes/nodes_placement.dart';
 import 'boundary_clipper.dart';
 import 'helpers/helpers.dart';
 
+/// The tree map circular UI
 class ProgressionTreeMap extends StatefulWidget {
   const ProgressionTreeMap(
       {super.key,
@@ -35,21 +36,37 @@ class ProgressionTreeMap extends StatefulWidget {
   @override
   State<ProgressionTreeMap> createState() => _ProgressionTreeMapState();
 
+  ///  The list of [TreeNode] to plot to the Ui
   final Map<TreeNode?, List<TreeNode>> treeNodes;
+  /// How far apart to space the circle borders
   final double spacingFactor;
+  /// Max number of circle borders to show
   final int maxDepthToShow;
+  /// The color of the circle bounder
   final Color circleBoundaryColor;
+  /// Whether to apply shade to the boundaries
   final bool circleBoundaryShade;
+  /// How to paint the circle borders
   final PaintingStyle circleBoundaryPaintingStyle;
+  /// Configures where the nodes are placed either in relation to circle border line
   final NodesPlacement nodePlacement;
+  /// How far apart the nodes to be
   final double nodeSeparationAngleFac;
+  /// Configures the sizes of all the nodes
   final double? globalNodeSize;
+  /// Configures the size of the main/center node
   final double? centerNodeSize;
+  /// Whether to draw node connection lines from the origin
   final bool? linesStartFromOrigin;
+  /// The color of the connecting lines
   final Color linesStrokeColor;
+  /// The width of the connecting lines
   final double linesStrokeWidth;
+  /// Configures the decoration of all the nodes
   final BoxDecoration? nodeDecoration;
+  /// Select how to clip the overflowing UI
   final Clip clipBehaviour;
+  /// The width of the stroke for the circle borders
   final double circleBoundaryStrokeWidth;
 }
 

@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
 
+/// This is the individual node that forms the tree
 class TreeNode {
+  /// The [Widget] the node contains
   final Widget? child;
+
+  /// The children of the node
   final List<TreeNode> nodes;
+
+  /// The offset of the node
   final Offset offset;
+
+  /// The [Size] of the node
   final double? size;
+
+  /// The angle to rotate the node
   final double angle;
+
+  /// The position of the node in relation to the center node
   final int depth;
+
+  /// Configures the node decoration
   final BoxDecoration? decoration;
+
+  /// [Widget] that runs alongside the node
   final Widget? partnerWidget;
+
+  /// The [Offset] of the [Widget] that runs alongside the node
   final Offset? partnerWidgetOffset;
 
   const TreeNode(
