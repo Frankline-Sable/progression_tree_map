@@ -20,4 +20,9 @@
 
 * Some housekeeping
  
+
+## 1.0.1- 13 October 2023
+
+* Updated the dart docs
+ 
  
