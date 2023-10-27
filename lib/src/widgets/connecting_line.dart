@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'classes/tree_node.dart';
+import '../classes/tree_node.dart';
 
 class ConnectingLine extends CustomPainter {
   ConnectingLine(

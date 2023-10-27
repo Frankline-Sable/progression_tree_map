@@ -101,6 +101,7 @@ class ProgressionTreeHome extends StatelessWidget {
     );
   }
 
+
   Map<TreeNode?, List<TreeNode>> get _tNodeColoredNodesAndOutlines => {
     const TreeNode(): [
       TreeNode(
@@ -112,6 +113,13 @@ class ProgressionTreeHome extends StatelessWidget {
                 fontSize: 12),
           ),
           partnerWidgetOffset: const Offset(0, 20),
+          popUpWidget: const Column(
+            children: [
+              Text("Widget title is here"),
+
+            ],
+          ),
+          decoration: const BoxDecoration(color: Colors.red),
           nodes: [
             TreeNode(nodes: [
               const TreeNode(size: 15),
@@ -195,6 +203,7 @@ class ProgressionTreeHome extends StatelessWidget {
           ]),
     ]
   };
+
 
   Map<TreeNode?, List<TreeNode>> get _tNodeColoredNodesAndIcons => {
     const TreeNode(
@@ -537,7 +546,7 @@ class ProgressionTreeHome extends StatelessWidget {
             maxLines: 1,
             style: const TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w500,//
                 letterSpacing: 0,
                 color: Colors.black),
           ),

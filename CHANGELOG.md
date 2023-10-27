@@ -25,4 +25,13 @@
 
 * Updated the dart docs
  
+
+## 1.1.0- 27 October 2023
+
+* Fixed bug with the circle boundary outlines
+* Added Pop up feature on the nodes
+* Now u can disable nodes from a given depth
+* Added Interactivity to the map(zoom and pan)
+* Fixed other bugs and improved the widget
+ 
  

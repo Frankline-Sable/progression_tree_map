@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'circular_boundaries.dart';
-import 'connecting_line.dart';
+import 'classes/boundary_clipper.dart';
+import 'classes/node_container.dart';
 import 'classes/tree_node.dart';
+import 'enums/node_position.dart';
 import 'extensions/nums.dart';
 import 'extensions/colors.dart';
 import 'package:collection/collection.dart';
 import 'dart:math' as math;
 import 'package:vector_math/vector_math.dart' as vector;
-import 'classes/nodes_placement.dart';
-import 'boundary_clipper.dart';
+import 'enums/nodes_placement.dart';
 import 'helpers/helpers.dart';
+import 'widgets/circular_boundaries.dart';
+import 'widgets/connecting_line.dart';
+import 'widgets/hole_clipper.dart';
+import 'widgets/pop_up_widget.dart';
 
 /// The tree map circular UI
 class ProgressionTreeMap extends StatefulWidget {
@@ -31,7 +35,10 @@ class ProgressionTreeMap extends StatefulWidget {
       this.clipBehaviour = Clip.antiAlias,
       this.circleBoundaryStrokeWidth = 5,
       this.nodeDecoration =
-          const BoxDecoration(color: Colors.white, shape: BoxShape.circle)});
+          const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+      this.interactiveViewClipBehavior = Clip.hardEdge,
+      this.activeDepth,
+      this.transformationController});
 
   @override
   State<ProgressionTreeMap> createState() => _ProgressionTreeMapState();
@@ -83,6 +90,17 @@ class ProgressionTreeMap extends StatefulWidget {
 
   /// The width of the stroke for the circle borders
   final double circleBoundaryStrokeWidth;
+
+  /// If set to Clip.none, the child may extend beyond the size of the InteractiveViewer,
+  /// but it will not receive gestures in these areas. Be sure that the InteractiveViewer
+  /// is the desired size when using Clip.none
+  final Clip interactiveViewClipBehavior;
+
+  /// This is controller that links to the Interactive viewer of this widget.
+  final TransformationController? transformationController;
+
+  /// Use this to control the current visible nodes/active nodes.
+  final int? activeDepth;
 }
 
 class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
@@ -95,6 +113,8 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
   bool _linesStartFromOrigin = true;
 
   TreeNode? _centerTreeNode;
+  TreeNode? _popUpNode;
+  double _activeDepthRadius = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -104,79 +124,109 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         ? treeNodeDepth
         : (widget.maxDepthToShow < 1 ? treeNodeDepth : widget.maxDepthToShow);
 
-    return Padding(
-      padding: EdgeInsets.all(
-          (mediaQueryData.size.width / 2) * widget.spacingFactor),
-      child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints viewportConstraints) {
-        final double spacing = (viewportConstraints.maxWidth / nodeDepth);
+    return InteractiveViewer(
+      minScale: 0.1,
+      boundaryMargin: EdgeInsets.all(mediaQueryData.size.width / 4),
+      maxScale: 5.0,
+      transformationController: widget.transformationController,
+      clipBehavior: widget.interactiveViewClipBehavior,
+      child: Padding(
+        padding: EdgeInsets.all(
+            (mediaQueryData.size.width / 2) * widget.spacingFactor),
+        child: LayoutBuilder(builder:
+            (BuildContext context, BoxConstraints viewportConstraints) {
+          final double spacing = (viewportConstraints.maxWidth / nodeDepth);
 
-        _centerNodeSize = widget.centerNodeSize == null
-            ? (spacing / 2)
-            : widget.centerNodeSize!;
-        _defaultNodeSize = widget.globalNodeSize == null
-            ? _centerNodeSize / 2
-            : widget.globalNodeSize!;
+          _centerNodeSize = widget.centerNodeSize == null
+              ? (spacing / 2)
+              : widget.centerNodeSize!;
+          _defaultNodeSize = widget.globalNodeSize == null
+              ? _centerNodeSize / 2
+              : widget.globalNodeSize!;
 
-        _getNodePlacementFactor(spacing);
+          _getNodePlacementFactor(spacing);
 
-        _prepareUiNodes(
-            widget.treeNodes.values.first, viewportConstraints, spacing);
-        _centerTreeNode = widget.treeNodes.keys.first;
+          _prepareUiNodes(
+              widget.treeNodes.values.first, viewportConstraints, spacing);
+          _centerTreeNode = widget.treeNodes.keys.first;
 
-        _linesStartFromOrigin = widget.linesStartFromOrigin == null
-            ? (_centerTreeNode == null ? false : true)
-            : widget.linesStartFromOrigin!;
+          _linesStartFromOrigin = widget.linesStartFromOrigin == null
+              ? (_centerTreeNode == null ? false : true)
+              : widget.linesStartFromOrigin!;
 
-        return Center(
-          child: SizedBox(
-            width: viewportConstraints.maxWidth,
-            height: viewportConstraints.maxHeight,
-            child: ClipPath(
-              clipper: BoundaryClipper(),
-              clipBehavior: widget.clipBehaviour,
+          _activeDepthRadius =
+              (spacing * (widget.activeDepth ?? nodeDepth)) / 2 +
+                  _defaultNodeSize / 2;
+
+          return Center(
+            child: SizedBox(
+              width: viewportConstraints.maxWidth,
+              height: viewportConstraints.maxHeight,
               child: Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.center,
-                  children: [
-                    ...List.generate(nodeDepth, (index) {
-                      final looper = nodeDepth - index;
-                      return CustomPaint(
-                        painter: CircularBoundaries(
-                            radius: (looper * spacing) / 2,
-                            strokeWidth: widget.circleBoundaryStrokeWidth,
-                            paintingStyle: widget.circleBoundaryPaintingStyle,
-                            color: widget.circleBoundaryColor.tintOrShade(
-                                widget.circleBoundaryShade
-                                    ? ((100 * (looper / nodeDepth))
-                                        .clampRange(min: 30, max: 0))
-                                    : 0,
-                                darken: false)),
-                      );
-                    }),
-                    CustomPaint(
-                      painter: ConnectingLine(
-                          uiNodesPrep: _uiNodesPrep,
-                          color: widget.linesStrokeColor,
-                          strokeWidth: widget.linesStrokeWidth,
-                          startFromCenter: _linesStartFromOrigin),
-                      size: viewportConstraints.biggest,
-                    ),
-                    if (_centerTreeNode != null)
-                      Container(
+                children: [
+                  ClipPath(
+                    clipper: BoundaryClipper(),
+                    clipBehavior: widget.clipBehaviour,
+                    child: Stack(
+                        clipBehavior: Clip.none,
                         alignment: Alignment.center,
-                        width: _centerNodeSize,
-                        height: _centerNodeSize,
-                        decoration: _centerTreeNode!.decoration ??
-                            widget.nodeDecoration,
-                        child: _centerTreeNode!.child,
-                      ),
-                    ..._displayUiNodesWidgets(),
-                  ]),
+                        children: [
+                          ...List.generate(nodeDepth, (index) {
+                            final looper = nodeDepth - index;
+
+                            return CustomPaint(
+                              painter: CircularBoundaries(
+                                  radius: (looper * spacing) / 2,
+                                  strokeWidth: widget.circleBoundaryStrokeWidth,
+                                  paintingStyle:
+                                      widget.circleBoundaryPaintingStyle,
+                                  color: widget.circleBoundaryColor.tintOrShade(
+                                      widget.circleBoundaryShade
+                                          ? ((100 * (looper / nodeDepth))
+                                              .clampRange(min: 30, max: 0))
+                                          : 0,
+                                      darken: false)),
+                            );
+                          }),
+                          CustomPaint(
+                            painter: ConnectingLine(
+                                uiNodesPrep: _uiNodesPrep,
+                                color: widget.linesStrokeColor,
+                                strokeWidth: widget.linesStrokeWidth,
+                                startFromCenter: _linesStartFromOrigin),
+                            size: viewportConstraints.biggest,
+                          ),
+                          if (_centerTreeNode != null)
+                            Container(
+                              alignment: Alignment.center,
+                              width: _centerNodeSize,
+                              height: _centerNodeSize,
+                              decoration: _centerTreeNode!.decoration ??
+                                  widget.nodeDecoration,
+                              child: _centerTreeNode!.child,
+                            ),
+                          ..._displayUiNodesWidgets(),
+                          ClipPath(
+                              clipper: HoleClipper(radius: _activeDepthRadius),
+                              clipBehavior: Clip.antiAlias,
+                              child: Container(
+                                width: viewportConstraints.maxWidth,
+                                height: viewportConstraints.maxHeight,
+                                decoration: const BoxDecoration(
+                                  color: Colors.grey,
+                                  backgroundBlendMode: BlendMode.saturation,
+                                ),
+                              ))
+                        ]),
+                  ),
+                  if (_popUpNode != null && _popUpNode?.popUpWidget != null)
+                    PopUpWidget(popUpNode: _popUpNode!)
+                ],
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -185,9 +235,12 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
     int count = 0;
     nodeDepthTraverse(List<TreeNode> nodes) {
       count++;
+      int count2 = count;
       for (TreeNode node in nodes) {
         if (node.nodes.isNotEmpty) {
           nodeDepthTraverse(node.nodes);
+        } else {
+          count = count2;
         }
       }
     }
@@ -368,12 +421,15 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
       w.add(Positioned(
         top: uiN.keys.first.offset.dy,
         left: uiN.keys.first.offset.dx,
-        child: Container(
-            alignment: Alignment.center,
-            width: uiN.keys.first.size,
-            height: uiN.keys.first.size,
-            decoration: uiN.keys.first.decoration ?? widget.nodeDecoration,
-            child: uiN.keys.first.child),
+        child: GestureDetector(
+          onTap: () => _showPopUp(uiN.keys.first),
+          child: Container(
+              alignment: Alignment.center,
+              width: uiN.keys.first.size,
+              height: uiN.keys.first.size,
+              decoration: uiN.keys.first.decoration ?? widget.nodeDecoration,
+              child: uiN.keys.first.child),
+        ),
       ));
 
       for (TreeNode tNode in uiN.values.first) {
@@ -388,12 +444,15 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         w.add(Positioned(
           top: tNode.offset.dy,
           left: tNode.offset.dx,
-          child: Container(
-              alignment: Alignment.center,
-              width: tNode.size,
-              height: tNode.size,
-              decoration: tNode.decoration ?? widget.nodeDecoration,
-              child: tNode.child),
+          child: GestureDetector(
+            onTap: () => _showPopUp(tNode),
+            child: Container(
+                alignment: Alignment.center,
+                width: tNode.size,
+                height: tNode.size,
+                decoration: tNode.decoration ?? widget.nodeDecoration,
+                child: tNode.child),
+          ),
         ));
       }
     }
@@ -410,13 +469,7 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         _nodePositionFactor = 0;
     }
   }
+
+  void _showPopUp(TreeNode node) =>
+      setState(() => _popUpNode = _popUpNode == null ? node : null);
 }
-
-class NodeContainer {
-  TreeNode treeNode;
-  NodePosition nodePosition;
-
-  NodeContainer(this.treeNode, this.nodePosition);
-}
-
-enum NodePosition { start, end }

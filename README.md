@@ -9,8 +9,8 @@ Add this to your pubspec.yaml dependencies:
 
 ```yaml
 dependencies:
-  
-  progression_tree_map: ^1.0.1
+
+  progression_tree_map: ^1.1.0
 ```
 
 Then make sure to call the import

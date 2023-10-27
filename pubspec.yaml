@@ -1,6 +1,6 @@
 name: progression_tree_map
 description: This is  a visual representation tool that helps users track and understand the development or growth of a process or a concept.
-version: 1.0.1
+version: 1.1.0
 homepage: https://github.com/Frankline-Sable/progression_tree_map
 
 environment:
@@ -17,7 +17,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.3
+  flutter_lints: ^3.0.0
 
 
 flutter:

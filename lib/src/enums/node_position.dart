@@ -1,0 +1,1 @@
+enum NodePosition { start, end }

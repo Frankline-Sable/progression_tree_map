@@ -29,6 +29,9 @@ class TreeNode {
   /// The [Offset] of the [Widget] that runs alongside the node
   final Offset? partnerWidgetOffset;
 
+  /// The popup widget to show when the node is tapped
+  final Widget? popUpWidget;
+
   const TreeNode(
       {this.child,
       this.nodes = const [],
@@ -38,7 +41,8 @@ class TreeNode {
       this.decoration,
       this.partnerWidget,
       this.partnerWidgetOffset,
-      this.size});
+      this.size,
+      this.popUpWidget});
 
   TreeNode copyWith(
       {Widget? child,
@@ -50,7 +54,8 @@ class TreeNode {
       double? angle,
       Widget? partnerWidget,
       Offset? partnerWidgetOffset,
-      BoxDecoration? decoration}) {
+      BoxDecoration? decoration,
+      Widget? popUpWidget}) {
     return TreeNode(
         child: child ?? this.child,
         nodes: nodes ?? this.nodes,
@@ -60,6 +65,7 @@ class TreeNode {
         partnerWidget: partnerWidget ?? this.partnerWidget,
         partnerWidgetOffset: partnerWidgetOffset ?? this.partnerWidgetOffset,
         angle: angle ?? this.angle,
-        decoration: decoration ?? this.decoration);
+        decoration: decoration ?? this.decoration,
+        popUpWidget: popUpWidget ?? this.popUpWidget);
   }
 }
