@@ -32,7 +32,7 @@ class ProgressionTreeMap extends StatefulWidget {
       this.linesStrokeColor = Colors.white,
       this.linesStrokeWidth = 1,
       this.linesStartFromOrigin,
-      this.clipBehaviour = Clip.antiAlias,
+      this.clipBehaviour = Clip.none,
       this.circleBoundaryStrokeWidth = 5,
       this.nodeDecoration =
           const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
@@ -124,50 +124,50 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
         ? treeNodeDepth
         : (widget.maxDepthToShow < 1 ? treeNodeDepth : widget.maxDepthToShow);
 
-    return InteractiveViewer(
-      minScale: 0.1,
-      boundaryMargin: EdgeInsets.all(mediaQueryData.size.width / 4),
-      maxScale: 5.0,
-      transformationController: widget.transformationController,
-      clipBehavior: widget.interactiveViewClipBehavior,
-      child: Padding(
-        padding: EdgeInsets.all(
-            (mediaQueryData.size.width / 2) * widget.spacingFactor),
-        child: LayoutBuilder(builder:
-            (BuildContext context, BoxConstraints viewportConstraints) {
-          final double spacing = (viewportConstraints.maxWidth / nodeDepth);
+    return ClipPath(
+      clipper: BoundaryClipper(),
+      clipBehavior: widget.clipBehaviour,
+      child: InteractiveViewer(
+        minScale: 0.1,
+        boundaryMargin: EdgeInsets.all(mediaQueryData.size.width / 4),
+        maxScale: 5.0,
+        transformationController: widget.transformationController,
+        clipBehavior: widget.interactiveViewClipBehavior,
+        child: Padding(
+          padding: EdgeInsets.all(
+              (mediaQueryData.size.width / 2) * widget.spacingFactor),
+          child: LayoutBuilder(builder:
+              (BuildContext context, BoxConstraints viewportConstraints) {
+            final double spacing = (viewportConstraints.maxWidth / nodeDepth);
 
-          _centerNodeSize = widget.centerNodeSize == null
-              ? (spacing / 2)
-              : widget.centerNodeSize!;
-          _defaultNodeSize = widget.globalNodeSize == null
-              ? _centerNodeSize / 2
-              : widget.globalNodeSize!;
+            _centerNodeSize = widget.centerNodeSize == null
+                ? (spacing / 2)
+                : widget.centerNodeSize!;
+            _defaultNodeSize = widget.globalNodeSize == null
+                ? _centerNodeSize / 2
+                : widget.globalNodeSize!;
 
-          _getNodePlacementFactor(spacing);
+            _getNodePlacementFactor(spacing);
 
-          _prepareUiNodes(
-              widget.treeNodes.values.first, viewportConstraints, spacing);
-          _centerTreeNode = widget.treeNodes.keys.first;
+            _prepareUiNodes(
+                widget.treeNodes.values.first, viewportConstraints, spacing);
+            _centerTreeNode = widget.treeNodes.keys.first;
 
-          _linesStartFromOrigin = widget.linesStartFromOrigin == null
-              ? (_centerTreeNode == null ? false : true)
-              : widget.linesStartFromOrigin!;
+            _linesStartFromOrigin = widget.linesStartFromOrigin == null
+                ? (_centerTreeNode == null ? false : true)
+                : widget.linesStartFromOrigin!;
 
-          _activeDepthRadius =
-              (spacing * (widget.activeDepth ?? nodeDepth)) / 2 +
-                  _defaultNodeSize / 2;
+            _activeDepthRadius =
+                (spacing * (widget.activeDepth ?? nodeDepth)) / 2 +
+                    _defaultNodeSize / 2;
 
-          return Center(
-            child: SizedBox(
-              width: viewportConstraints.maxWidth,
-              height: viewportConstraints.maxHeight,
-              child: Stack(
-                children: [
-                  ClipPath(
-                    clipper: BoundaryClipper(),
-                    clipBehavior: widget.clipBehaviour,
-                    child: Stack(
+            return Center(
+              child: SizedBox(
+                width: viewportConstraints.maxWidth,
+                height: viewportConstraints.maxHeight,
+                child: Stack(
+                  children: [
+                    Stack(
                         clipBehavior: Clip.none,
                         alignment: Alignment.center,
                         children: [
@@ -218,14 +218,14 @@ class _ProgressionTreeMapState extends State<ProgressionTreeMap> {
                                 ),
                               ))
                         ]),
-                  ),
-                  if (_popUpNode != null && _popUpNode?.popUpWidget != null)
-                    PopUpWidget(popUpNode: _popUpNode!)
-                ],
+                    if (_popUpNode != null && _popUpNode?.popUpWidget != null)
+                      PopUpWidget(popUpNode: _popUpNode!)
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
