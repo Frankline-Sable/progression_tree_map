@@ -35,3 +35,9 @@
 * Fixed other bugs and improved the widget
  
  
+
+## 1.1.1- 30 October 2023
+
+* Fixed a bug with the clipper
+ 
+ 
